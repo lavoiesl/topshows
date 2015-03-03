@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="topShowsApp" ng-controller="MainCtrl">
+<head>
+  <meta charset="UTF-8">
+  <title ng-bind="title">Top shows</title>
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/foundation/5.5.1/css/normalize.min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/foundation/5.5.1/css/foundation.min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.css">
+</head>
+<body>
+
+  <nav class="top-bar" data-topbar role="navigation">
+    <ul class="title-area">
+      <li class="name">
+        <h1><a href="#">Top Shows</a></h1>
+      </li>
+       <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
+      <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
+    </ul>
+
+    <section class="top-bar-section">
+      <!-- Left Nav Section -->
+      <ul class="left">
+        <li ng-class="{active: href == route.current.originalPath }" ng-repeat="(href, title) in menu"><a ng-href="#{{ href }}">{{ title }}</a></li>
+      </ul>
+    </section>
+  </nav>
+
+  <h1 ng-bind="title">Top shows</h1>
+
+  <nav>
+    <ul class="pagination"></ul>
+  </nav>
+
+  <div class="view-container">
+    <div ng-view class="view-frame"></div>
+  </div>
+
+
+  <script src="//code.jquery.com/jquery-2.1.3.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.14/angular.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.14/angular-route.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-date/0.0.7/date.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/foundation/5.5.1/js/foundation.min.js"></script>
+  <script src="scripts/app.js"></script>
+  <script src="scripts/services.js"></script>
+  <script src="scripts/filters.js"></script>
+  <script src="scripts/controllers.js"></script>
+  <script>
+    $(document).foundation();
+  </script>
+</body>
+</html>

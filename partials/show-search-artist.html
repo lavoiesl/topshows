@@ -1,0 +1,64 @@
+<div ng-if="error" class="alert-box alert">{{ error.message }}</div>
+
+<div class="row-fluid">
+  <div class="column medium-1">
+    <label>
+      Limit
+      <select ng-model="settings.limit" ng-options="limit for limit in [10, 25, 50, 100]"></select>
+    </label>
+  </div>
+</div>
+
+<table style="width: 100%">
+  <thead>
+    <tr>
+      <th>&nbsp;</th>
+      <th>Event</th>
+      <th>Artist</th>
+      <th>Location</th>
+      <th>Venue</th>
+      <th>Date</th>
+      <th>Time</th>
+      <th>Tags</th>
+      <th>Website</th>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td><input type="search" ng-model="settings.artist" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }"></td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="event in events track by event.id" ng-id="event.id">
+      <td style="width: 100px; padding: 5px"><img style="width: 100%" ng-if="event.image[2]" ng-src="{{ event.image[2]['#text'] }}" alt=""></td>
+      <td><a ng-href="#/show/{{ event.id }}">{{ event.title }}</a></td>
+      <td>{{ event.artists.headliner }}</td>
+      <td><a ng-href="#/shows/search/location?location={{ event.venue.location.city ? event.venue.location.city : event.venue.location.country | encodeURI }}">{{ event.venue.location.city ? event.venue.location.city : event.venue.location.country }}</a></td>
+      <td>{{ event.venue.name }}</td>
+      <td>{{ event.startDate | date : 'yyyy-MM-dd' }}</td>
+      <td>{{ event.startDate | date : 'HH:mm' }}</td>
+      <td>
+        <ul class="inline-list" ng-if="event.tags.tag">
+          <li ng-repeat="tag in event.tags.tag"><span class="label secondary round">{{ tag }}</span></li>
+        </ul>
+      </td>
+      <td><a ng-if="event.website" ng-href="{{ event.website }}" target="_blank">{{ event.website | urlDomain }}</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<nav>
+  <ul class="pagination" ng-if="attrs.totalPages">
+    <li ng-repeat="page in [1, attrs.totalPages] | range" ng-class="{current: attrs.page == page}">
+      <a ng-click="settings.page = page">{{ page }}</a>
+    </li>
+  </ul>
+</nav>
+
+<pre>{{ events|json }}</pre>
