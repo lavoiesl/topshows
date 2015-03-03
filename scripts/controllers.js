@@ -12,6 +12,7 @@ topShowsControllers.controller('MainCtrl', ['$scope', '$route', '$rootScope',
       '/shows/search/location': 'By Location',
       '/shows/search/artist': 'By Artist'
     };
+    $scope.error = null;
 
     $scope.$on('$routeChangeSuccess', function(ev,data) {
       if (data.$$route && data.$$route.originalPath && $scope.menu[data.$$route.originalPath]) {
@@ -25,7 +26,6 @@ topShowsControllers.controller('ShowSearchLocationCtrl', ['$scope', '$http', 'La
   function($scope, $http, LastFM, $routeParams) {
     $scope.events = [];
     $scope.attrs = null;
-    $scope.error = null;
 
     $scope.settings = {
       limit: 25,
@@ -43,15 +43,7 @@ topShowsControllers.controller('ShowSearchLocationCtrl', ['$scope', '$http', 'La
 
       LastFM.jsonp('geo.getEvents', options).success(function(data, status) {
           if (data.events && data.events.event) {
-            for (var i = 0; i < data.events.event.length; i++) {
-              if (data.events.event[i].tags && typeof data.events.event[i].tags.tag == 'string') {
-                // cast to array
-                data.events.event[i].tags.tag = [data.events.event[i].tags.tag];
-              }
-              if (data.events.event[i].startDate) {
-                data.events.event[i].startDate = new Date(data.events.event[i].startDate);
-              }
-            }
+            data.events.event.map(LastFM.processEvent);
 
             $scope.events = data.events.event;
             $scope.attrs = data.events['@attr'] ? data.events['@attr'] : null;
@@ -60,7 +52,8 @@ topShowsControllers.controller('ShowSearchLocationCtrl', ['$scope', '$http', 'La
             $scope.attrs = null;
           }
 
-          $scope.error = data.error ? {code: data.error, message: data.message} : null;
+          $scope.$parent.console = $scope.events;
+          $scope.$parent.error = data.error ? {code: data.error, message: data.message} : null;
       });
     };
 
@@ -73,7 +66,6 @@ topShowsControllers.controller('ShowSearchArtistCtrl', ['$scope', '$http', 'Last
   function($scope, $http, LastFM, $routeParams) {
     $scope.events = [];
     $scope.attrs = null;
-    $scope.error = null;
 
     $scope.settings = {
       limit: 25,
@@ -97,15 +89,7 @@ topShowsControllers.controller('ShowSearchArtistCtrl', ['$scope', '$http', 'Last
 
       LastFM.jsonp('artist.getEvents', options).success(function(data, status) {
           if (data.events && data.events.event) {
-            for (var i = 0; i < data.events.event.length; i++) {
-              if (data.events.event[i].tags && typeof data.events.event[i].tags.tag == 'string') {
-                // cast to array
-                data.events.event[i].tags.tag = [data.events.event[i].tags.tag];
-              }
-              if (data.events.event[i].startDate) {
-                data.events.event[i].startDate = new Date(data.events.event[i].startDate);
-              }
-            }
+            data.events.event.map(LastFM.processEvent);
 
             $scope.events = data.events.event;
             $scope.attrs = data.events['@attr'] ? data.events['@attr'] : null;
@@ -114,7 +98,8 @@ topShowsControllers.controller('ShowSearchArtistCtrl', ['$scope', '$http', 'Last
             $scope.attrs = null;
           }
 
-          $scope.error = data.error ? {code: data.error, message: data.message} : null;
+          $scope.$parent.console = $scope.events;
+          $scope.$parent.error = data.error ? {code: data.error, message: data.message} : null;
       });
     };
 
@@ -126,30 +111,22 @@ topShowsControllers.controller('ShowSearchArtistCtrl', ['$scope', '$http', 'Last
 topShowsControllers.controller('ShowDetailCtrl', ['$scope', '$routeParams', 'LastFM',
   function($scope, $routeParams, LastFM) {
     $scope.event = [];
-    $scope.error = null;
 
     $scope.get = function(id) {
       LastFM.jsonp('event.getInfo', {event: id}).success(function(data, status) {
           if (data.event) {
-            for (var i = 0; i < data.event.length; i++) {
-              if (data.event[i].tags && typeof data.event[i].tags.tag == 'string') {
-                // cast to array
-                data.event[i].tags.tag = [data.event[i].tags.tag];
-              }
-              if (data.event[i].startDate) {
-                data.event[i].startDate = new Date(data.event[i].startDate);
-              }
-            }
+            LastFM.processEvent(data.event);
 
             $scope.event = data.event;
             $scope.attrs = data.event['@attr'] ? data.event['@attr'] : null;
             $scope.$parent.title = data.event.title;
           } else {
-            $scope.event = [];
+            $scope.event = null;
             $scope.attrs = null;
           }
 
-          $scope.error = data.error ? {code: data.error, message: data.message} : null;
+          $scope.$parent.console = $scope.event;
+          $scope.$parent.error = data.error ? {code: data.error, message: data.message} : null;
       });
     }
 

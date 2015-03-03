@@ -24,6 +24,16 @@ topShowsServices.factory('LastFM', ['$http',
 
         return $http.jsonp(url);
       };
+
+      this.processEvent = function(event) {
+        if (event.tags && typeof event.tags.tag == 'string') {
+          // cast to array
+          event.tags.tag = [event.tags.tag];
+        }
+        if (event.startDate) {
+          event.startDate = new Date(event.startDate);
+        }
+      };
     };
   }]);
 

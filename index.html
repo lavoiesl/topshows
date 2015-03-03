@@ -26,14 +26,17 @@
     </section>
   </nav>
 
-  <h1 ng-bind="title">Top shows</h1>
+  <div id="viewport" style="margin: 10px">
+    <h1 ng-bind="title">Top shows</h1>
+    
+    <div ng-cloak ng-class="{'alert-box alert': error}" ng-bind="error.message"></div>
+    
+    <div class="view-container">
+      <div ng-view class="view-frame"></div>
+    </div>
 
-  <nav>
-    <ul class="pagination"></ul>
-  </nav>
-
-  <div class="view-container">
-    <div ng-view class="view-frame"></div>
+    <label>Show console: <input type="checkbox" ng-model="showConsole"></label>
+    <pre ng-show="showConsole" ng-bind="console | json"></pre>
   </div>
 
 
